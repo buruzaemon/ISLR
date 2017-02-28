@@ -14,26 +14,29 @@ data = {}
 data[0] = [1,0,1]
 data[1] = [0,1,0]
 data[2] = [0,0,1]
+data[3] = [1,1,0]
+data[4] = [1,1,1]
 df = pd.DataFrame(data)
 df = df.T
 df.columns = list('ABC')
+num_users = df.shape[0]
 #print(df)
 
-users = [0,1,2]
-row = 0
+curr_u_idx = 0
 data = []
 i, j = [], []
 offset_a = 0
 offset_b = offset_a + 1
 offset_c = offset_b + 1
 offset_other = offset_c + 1
-for u in users:
+for u in range(num_users):
     tmpdf = df.ix[u]
     a = tmpdf.A
     b = tmpdf.B
     c = tmpdf.C
     for r_ix in range(m.shape[0]):
-        curr_row = row*df.shape[0] + r_ix
+        curr_row = u*m.shape[0] + r_ix
+        print(curr_row)
         i.append(curr_row)
         j.append(offset_a)
         data.append(a)
@@ -53,7 +56,6 @@ for u in users:
                 j.append(offset_other+ix)
                 data.append(m.getrow(r_ix).getcol(ix).toarray()[0][0])
         
-    row += 1
 
 mm = coo_matrix((data, (i,j)), shape=(df.shape[0]*m.shape[0], 
                                       df.shape[1]+m.shape[1]))
